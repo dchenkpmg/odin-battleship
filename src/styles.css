@@ -73,3 +73,14 @@ textarea:not([rows]) {
 }
 
 /* End CSS Reset */
+
+body {
+    margin: 0;
+    height: 100vh;
+}
+
+.board {
+    display: flex;
+}
+
+.real-board {}
