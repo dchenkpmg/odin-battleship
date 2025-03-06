@@ -1,4 +1,4 @@
-import { Gameboard } from "../game/objects.js";
+import { Gameboard, Ship } from "../game/objects.js";
 
 export function renderRealBoard(p1) {
   console.log("Updating real board...");
@@ -41,7 +41,7 @@ export function renderCPUBoard(p2) {
       cellButton.classList.add("cell");
       cellButton.dataset.row = rowIndex;
       cellButton.dataset.col = cellIndex;
-      if (cell.ship !== null) {
+      if (cell.ship !== null && cell.hit) {
         cellButton.style.backgroundColor = "blue";
       }
       if (cell.hit == true && cell.ship == null) {
@@ -61,7 +61,6 @@ export function renderCPUBoard(p2) {
 
 export function addHitButtonListeners(game) {
   const boardDiv = document.querySelector(".cpu-board");
-  boardDiv.removeEventListener("click", handleBoardClick); // Remove existing listener
   boardDiv.addEventListener("click", (e) => handleBoardClick(e, game));
 }
 
@@ -69,7 +68,14 @@ function handleBoardClick(e, game) {
   const selectedColumn = e.target.dataset.col;
   const selectedRow = e.target.dataset.row;
   if (!selectedColumn || !selectedRow) return;
-  game.playRound(parseInt(selectedRow), parseInt(selectedColumn));
+  const gameOver = game.playRound(
+    parseInt(selectedRow),
+    parseInt(selectedColumn),
+  );
+  if (gameOver) {
+    const statusMsg = document.querySelector(".status-msg");
+    statusMsg.textContent = "Game Over!";
+  }
   renderRealBoard(game.p1);
   renderCPUBoard(game.p2);
 
@@ -87,33 +93,30 @@ export class GameController {
   }
 
   playRound(row, col) {
-    if (this.gameOver) return true;
     if (this.currentPlayer === this.p1) {
       this.p2.gameboard.receiveAttack(row, col);
       if (this.p2.gameboard.checkGameOver()) {
         this.gameOver = true;
         console.log("Real player wins!");
-        return;
+        return true;
       }
       this.currentPlayer = this.p2;
     }
 
     if (this.currentPlayer === this.p2) {
-      const [cpuRow, cpuCol] = this.getRandomCoordinates();
-      this.p1.gameboard.receiveAttack(cpuRow, cpuCol);
+      let attackSuccess = true;
+      do {
+        const [cpuRow, cpuCol] = getRandomCoordinates();
+        attackSuccess = this.p1.gameboard.receiveAttack(cpuRow, cpuCol);
+      } while (!attackSuccess);
+
       if (this.p1.gameboard.checkGameOver()) {
         this.gameOver = true;
         console.log("CPU Player Wins!");
-        return;
+        return true;
       }
       this.currentPlayer = this.p1;
     }
-  }
-
-  getRandomCoordinates() {
-    const row = Math.floor(Math.random() * 10);
-    const col = Math.floor(Math.random() * 10);
-    return [row, col];
   }
 
   resetGame() {
@@ -122,4 +125,28 @@ export class GameController {
     this.currentPlayer = this.realPlayer;
     this.gameOver = false;
   }
+}
+
+export function getRandomCoordinates() {
+  const row = Math.floor(Math.random() * 10);
+  const col = Math.floor(Math.random() * 10);
+  return [row, col];
+}
+
+export function randomisePlacements(player) {
+  const shipLengths = [2, 3, 3, 5];
+  shipLengths.forEach((shipLength) => {
+    let placed = false;
+    do {
+      const odds = Math.random();
+      let orientation;
+      if (odds >= 0.5) {
+        orientation = "horizontal";
+      } else {
+        orientation = "vertical";
+      }
+      const [row, col] = getRandomCoordinates();
+      placed = player.placeShip(row, col, new Ship(shipLength), orientation);
+    } while (!placed);
+  });
 }
