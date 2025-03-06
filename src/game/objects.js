@@ -43,7 +43,9 @@ export class Gameboard {
   }
 
   placeShip(r, c, ship, orientation) {
+    console.log("Placing ship!");
     if (!this.validPosition(r, c, ship.length, orientation)) {
+      console.log("Not placing ship!");
       return null;
     }
     if (orientation == "horizontal") {
@@ -87,6 +89,7 @@ export class Gameboard {
       this.board[r][c].ship.hit();
       this.board[r][c].ship.isSunk();
     } else {
+      this.board[r][c].hit = true;
       this.missedAttacks += 1;
     }
   }
@@ -111,7 +114,10 @@ export class Gameboard {
 
 class Player {
   constructor() {
-    this.board = new Gameboard(10, 10);
+    this.gameboard = new Gameboard(10, 10);
+  }
+  getBoard() {
+    return this.gameboard.board;
   }
 }
 
@@ -121,7 +127,7 @@ export class RealPlayer extends Player {
     this.type = "real";
   }
   placeShip(r, c, length, orientation) {
-    this.board.placeShip(r, c, length, orientation);
+    this.gameboard.placeShip(r, c, length, orientation);
   }
 }
 
@@ -133,6 +139,6 @@ export class CPUPlayer extends Player {
   placeShip(r, c, length, orientation) {
     // to change to random head row/col, valid length and orientation
     // something like this.board.placeShip(r, c, length, orientation);
-    this.board.placeShip(r, c, length, orientation);
+    this.gameboard.placeShip(r, c, length, orientation);
   }
 }
