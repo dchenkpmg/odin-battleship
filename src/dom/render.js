@@ -1,4 +1,4 @@
-import { Gameboard, Ship } from "../game/objects.js";
+import { Ship } from "../game/objects.js";
 
 export function renderRealBoard(p1) {
   console.log("Updating real board...");
@@ -41,7 +41,7 @@ export function renderCPUBoard(p2) {
       cellButton.classList.add("cell");
       cellButton.dataset.row = rowIndex;
       cellButton.dataset.col = cellIndex;
-      if (cell.ship !== null && cell.hit) {
+      if (cell.ship !== null) {
         cellButton.style.backgroundColor = "blue";
       }
       if (cell.hit == true && cell.ship == null) {
@@ -74,14 +74,12 @@ function handleBoardClick(e, game) {
   );
   if (gameOver) {
     const statusMsg = document.querySelector(".status-msg");
+    const replayBtn = document.querySelector(".replay-btn");
+    replayBtn.style.display = "block";
     statusMsg.textContent = "Game Over!";
   }
   renderRealBoard(game.p1);
   renderCPUBoard(game.p2);
-
-  // if (game.gameOver) {
-  //   alert(game.currentPlayer === game.p1 ? "CPU Player Wins!" : "You Win!");
-  // }
 }
 
 export class GameController {
@@ -104,11 +102,11 @@ export class GameController {
     }
 
     if (this.currentPlayer === this.p2) {
-      let attackSuccess = true;
+      let attackSuccess = false;
       do {
         const [cpuRow, cpuCol] = getRandomCoordinates();
         attackSuccess = this.p1.gameboard.receiveAttack(cpuRow, cpuCol);
-      } while (!attackSuccess);
+      } while (attackSuccess === false);
 
       if (this.p1.gameboard.checkGameOver()) {
         this.gameOver = true;
@@ -119,12 +117,12 @@ export class GameController {
     }
   }
 
-  resetGame() {
-    this.realPlayer.board = new Gameboard(10, 10);
-    this.cpuPlayer.board = new Gameboard(10, 10);
-    this.currentPlayer = this.realPlayer;
-    this.gameOver = false;
-  }
+  // resetGame() {
+  //   this.realPlayer.board = new Gameboard(10, 10);
+  //   this.cpuPlayer.board = new Gameboard(10, 10);
+  //   this.currentPlayer = this.realPlayer;
+  //   this.gameOver = false;
+  // }
 }
 
 export function getRandomCoordinates() {

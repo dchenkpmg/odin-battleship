@@ -107,7 +107,11 @@ body {
     border-radius: 10px;
 }
 
-.play-again {
+.cpu-board {
+    display: none;
+}
+
+.replay-btn {
     display: none;
 }
 
