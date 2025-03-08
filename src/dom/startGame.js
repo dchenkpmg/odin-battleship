@@ -1,5 +1,6 @@
-import { CPUPlayer, Gameboard } from "../game/objects.js";
+import { Player, Gameboard } from "../game/objects.js";
 import { randomisePlacements } from "./render.js";
+import { prepareGame } from "./prepareGame.js";
 import {
   GameController,
   renderRealBoard,
@@ -7,8 +8,9 @@ import {
   addHitButtonListeners,
 } from "./render.js";
 
-export function startGame(p1) {
-  const p2 = new CPUPlayer();
+export function startGame() {
+  const p1 = prepareGame();
+  const p2 = new Player();
 
   randomisePlacements(p2);
 
@@ -26,12 +28,13 @@ function addReplayListener(p1, p2) {
   const randomBtn = document.querySelector(".random-btn");
   const cpuBoard = document.querySelector(".cpu-board");
   const statusMsg = document.querySelector(".status-msg");
+
   replayBtn.addEventListener("click", () => {
     replayBtn.style.display = "none";
     startBtn.style.display = "block";
     randomBtn.style.display = "block";
     cpuBoard.style.display = "none";
-    statusMsg.textContent = "";
+    statusMsg.textContent = "Battleship";
     p1.gameboard = new Gameboard(10, 10);
     p2.gameboard = new Gameboard(10, 10);
     randomisePlacements(p1);

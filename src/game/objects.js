@@ -117,33 +117,14 @@ export class Gameboard {
   }
 }
 
-class Player {
+export class Player {
   constructor() {
     this.gameboard = new Gameboard(10, 10);
   }
   getBoard() {
     return this.gameboard.board;
   }
-}
-
-export class RealPlayer extends Player {
-  constructor() {
-    super();
-    this.type = "real";
-  }
   placeShip(r, c, length, orientation) {
-    return this.gameboard.placeShip(r, c, length, orientation);
-  }
-}
-
-export class CPUPlayer extends Player {
-  constructor() {
-    super();
-    this.type = "cpu";
-  }
-  placeShip(r, c, length, orientation) {
-    // to change to random head row/col, valid length and orientation
-    // something like this.board.placeShip(r, c, length, orientation);
     return this.gameboard.placeShip(r, c, length, orientation);
   }
 }

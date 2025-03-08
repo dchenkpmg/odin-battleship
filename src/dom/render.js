@@ -41,7 +41,7 @@ export function renderCPUBoard(p2) {
       cellButton.classList.add("cell");
       cellButton.dataset.row = rowIndex;
       cellButton.dataset.col = cellIndex;
-      if (cell.ship !== null) {
+      if (cell.ship !== null && cell.hit == true) {
         cellButton.style.backgroundColor = "blue";
       }
       if (cell.hit == true && cell.ship == null) {
@@ -86,43 +86,28 @@ export class GameController {
   constructor(p1, p2) {
     this.p1 = p1;
     this.p2 = p2;
-    this.currentPlayer = p1;
     this.gameOver = false;
   }
 
   playRound(row, col) {
-    if (this.currentPlayer === this.p1) {
-      this.p2.gameboard.receiveAttack(row, col);
-      if (this.p2.gameboard.checkGameOver()) {
-        this.gameOver = true;
-        console.log("Real player wins!");
-        return true;
-      }
-      this.currentPlayer = this.p2;
+    this.p2.gameboard.receiveAttack(row, col);
+    if (this.p2.gameboard.checkGameOver()) {
+      this.gameOver = true;
+      console.log("Real player wins!");
+      return true;
     }
+    let attackSuccess = false;
+    do {
+      const [cpuRow, cpuCol] = getRandomCoordinates();
+      attackSuccess = this.p1.gameboard.receiveAttack(cpuRow, cpuCol);
+    } while (attackSuccess === false);
 
-    if (this.currentPlayer === this.p2) {
-      let attackSuccess = false;
-      do {
-        const [cpuRow, cpuCol] = getRandomCoordinates();
-        attackSuccess = this.p1.gameboard.receiveAttack(cpuRow, cpuCol);
-      } while (attackSuccess === false);
-
-      if (this.p1.gameboard.checkGameOver()) {
-        this.gameOver = true;
-        console.log("CPU Player Wins!");
-        return true;
-      }
-      this.currentPlayer = this.p1;
+    if (this.p1.gameboard.checkGameOver()) {
+      this.gameOver = true;
+      console.log("CPU Player Wins!");
+      return true;
     }
   }
-
-  // resetGame() {
-  //   this.realPlayer.board = new Gameboard(10, 10);
-  //   this.cpuPlayer.board = new Gameboard(10, 10);
-  //   this.currentPlayer = this.realPlayer;
-  //   this.gameOver = false;
-  // }
 }
 
 export function getRandomCoordinates() {

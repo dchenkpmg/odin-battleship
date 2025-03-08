@@ -80,11 +80,7 @@ textarea:not([rows]) {
 body {
     margin: 0;
     height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-family: Arial, sans-serif;
+
 }
 
 .game-boards {
@@ -138,4 +134,30 @@ body {
 .cell:disabled {
     background-color: #eee;
     cursor: not-allowed;
+}
+
+.status-msg {
+    margin: 2rem;
+}
+
+.btn-container {
+    display: flex;
+}
+
+.btn {
+    border: 2px solid black;
+    outline: none;
+    background-color: white;
+    margin: 2rem 2rem;
+    padding: 1rem 1rem;
+    border-radius: 0.5rem;
+
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
 }

@@ -1,8 +1,8 @@
-import { Gameboard, RealPlayer } from "../game/objects.js";
+import { Gameboard, Player } from "../game/objects.js";
 import { randomisePlacements, renderRealBoard } from "./render.js";
 
 export function prepareGame() {
-  const p1 = new RealPlayer();
+  const p1 = new Player();
   randomisePlacements(p1);
   renderRealBoard(p1);
   addRandomiserEventListener(p1);
